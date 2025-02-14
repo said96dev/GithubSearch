@@ -1,21 +1,21 @@
-import { UserData } from '@/lib/types'
-import { GET_USER } from '@/service/queries'
 import { useQuery } from '@apollo/client'
 import UserCard from './UserCard'
 import StatsContainer from './StatsContainer'
-import { PopularRepos } from './PopularRepos'
-import { UsedLanguages } from './UsedLanguages'
-import { ForkedRepos } from './ForkedRepos'
 import Loading from './Loading'
-
+import { UserData } from '@/lib/types'
+import { GET_USER } from '@/service/queries'
+import UsedLanguages from '../chart/UsedLanguages'
+import PopularRepos from '../chart/PopularRepos'
+import ForkedRepos from '../chart/ForkedRepos'
 type UserProfileProps = {
   userName: string
 }
 
 const UserProfile = ({ userName }: UserProfileProps) => {
-  const { loading, error, data } = useQuery<UserData>(GET_USER, {
+  const { data, loading, error } = useQuery<UserData>(GET_USER, {
     variables: { login: userName },
   })
+
   if (loading) return <Loading />
   if (error) return <h2 className='text-xl'>{error.message}</h2>
   if (!data) return <h2 className='text-xl'>User Not Found.</h2>
@@ -30,6 +30,7 @@ const UserProfile = ({ userName }: UserProfileProps) => {
     following,
     gists,
   } = data.user
+
   return (
     <div>
       <UserCard avatarUrl={avatarUrl} name={name} bio={bio} url={url} />
@@ -49,5 +50,4 @@ const UserProfile = ({ userName }: UserProfileProps) => {
     </div>
   )
 }
-
 export default UserProfile
